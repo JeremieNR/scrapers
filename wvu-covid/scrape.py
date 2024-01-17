@@ -31,31 +31,31 @@ def tr_no_bg(css_class):
 ## grab data from tr
 #### iteratively preserve column name in obj
 def extract_tr(row, headers):
-  print(row.contents)
-  parsed = {}
-  for idx,header in enumerate(headers):
-    td = row.contents[idx]
-    if td.find('time') not in [-1, None]: ## is date
-      parsed[header] = td.find('time')['datetime']
-    else: ## not date
-      string = td.string.strip()
-      parsed[header] = None if string in ['-',''] else float(string.replace('%',''))
+    print(row.contents)
+    parsed = {}
+    for idx,header in enumerate(headers):
+        td = row.contents[idx]
+        if td.find('time') not in [-1, None]: ## is date
+            parsed[header] = td.find('time')['datetime']
+        else: ## not date
+            string = td.string.strip()
+            parsed[header] = None if string in ['-',''] else float(string.replace('%',''))
   return parsed
 
 ## iterate through all tables on page
 for table in tables:
-  title = table.previous.find('caption').contents[0]
-  slug = slugify(title)
-  description = table.previous.find('caption').contents[1].text
-  headers = [th.text for th in table.findAll('th', class_='background-blue-grey')] if table.find('th', class_='background-blue-grey') else [th.text for th in table.findAll('th', class_='background-yellow')]
-  rows = table.findAll('tr', class_=tr_no_bg)
-  data = [extract_tr(row, headers) for row in rows]
-  formatted = {
-      'title': title,
-      'description': description,
-      'date_scraped': dt.now().strftime("%Y-%m-%d-%H:%M:%S"),
-      'data': data
+    title = table.previous.find('caption').contents[0]
+    slug = slugify(title)
+    description = table.previous.find('caption').contents[1].text
+    headers = [th.text for th in table.findAll('th', class_='background-blue-grey')] if table.find('th', class_='background-blue-grey') else [th.text for th in table.findAll('th', class_='background-yellow')]
+    rows = table.findAll('tr', class_=tr_no_bg)
+    data = [extract_tr(row, headers) for row in rows]
+    formatted = {
+        'title': title,
+        'description': description,
+        'date_scraped': dt.now().strftime("%Y-%m-%d-%H:%M:%S"),
+        'data': data
   }
 
-  with open(f'wvu-covid/{slug}.json', 'w') as file:
-    json.dump(formatted, file)
+    with open(f'wvu-covid/{slug}.json', 'w') as file:
+        json.dump(formatted, file)
