@@ -20,21 +20,21 @@ headlines = doc('a', class_='hdn-analytics')
 
 formatted = []
 for headline in headlines:
-  if 'visit|article' in headline['data-hdn-analytics'] or 'visit|blogPost' in headline['data-hdn-analytics']:
-    type = headline['data-hdn-analytics'].split('|')[1].split('-')[0]
-    link = f'https://www.sfchronicle.com{headline["href"]}' if type == 'article' else headline['href']
-    section = link.split('/')[3]
-    formatted.append({
-        'headline': headline.text.strip(),
-        'type': type,
-        'section': section,
-        'link': link,
-    })
+    if 'visit|article' in headline['data-hdn-analytics'] or 'visit|blogPost' in headline['data-hdn-analytics']:
+        type = headline['data-hdn-analytics'].split('|')[1].split('-')[0]
+        link = f'https://www.sfchronicle.com{headline["href"]}' if type == 'article' else headline['href']
+        section = link.split('/')[3]
+        formatted.append({
+            'headline': headline.text.strip(),
+            'type': type,
+            'section': section,
+            'link': link,
+        })
 
 contents = {
     'date_scraped': dt.now().strftime("%Y-%m-%d-%H:%M:%S"),
     'data': formatted
-  }
+}
 
 with open('headlines/sfchron/sfchron.json', 'w') as file:
-  json.dump(contents, file)
+    json.dump(contents, file)
